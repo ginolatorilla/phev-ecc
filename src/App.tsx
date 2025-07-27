@@ -7,10 +7,12 @@ const App = () => {
   const [energyEconomy, setEnergyEconomy] = useState(1);
   const [fuelEconomy, setFuelEconomy] = useState(1);
   const [powerSource, setPowerSource] = useState("");
-  const [fuelPrice, setFuelPrice] = useState(55);
+  const [fuelPrice, setFuelPrice] = useState(1);
+  const [powerPrice, setPowerPrice] = useState(1);
   const powerCost = useMemo(() => {
-    return energyEconomy * (powerRates.get(powerSource) ?? 0);
-  }, [powerSource, energyEconomy]);
+    const unitPrice = powerSource === "Other" ? powerPrice : (powerRates.get(powerSource) ?? 0);
+    return energyEconomy * unitPrice;
+  }, [powerSource, energyEconomy, powerPrice]);
   const fuelCost = useMemo(() => {
     return fuelEconomy * fuelPrice;
   }, [fuelEconomy, fuelPrice]);
@@ -18,7 +20,6 @@ const App = () => {
   return (
     <>
       <h1>EV Energy Cost Calculator</h1>
-      <p className="italic">This tool is optimised for the 2024 BYD Sealion 6 model.</p>
 
       <RoundedContainer title="How's your driving?">
         <RangeNumber
@@ -44,11 +45,22 @@ const App = () => {
           options={[
             { name: "Meralco", description: "PHP 12.64 per kWh as of July 2025" },
             { name: "EVRO", description: "PHP 28.50 per kWh" },
+            { name: "Other", description: "Please specify in the input below" },
           ]}
           choice={powerSource}
           onChange={(e) => setPowerSource(e.target.value)}
           placeholder="Select a power provider"
         />
+
+        {powerSource === "Other" && (
+          <RangeNumber
+            min={1}
+            max={100}
+            value={powerPrice}
+            label="Cost of power (PHP/KW)?"
+            onChange={(e) => setPowerPrice(Number(e.target.value))}
+          />
+        )}
 
         <RangeNumber
           min={1}
@@ -58,6 +70,7 @@ const App = () => {
           onChange={(e) => setFuelPrice(Number(e.target.value))}
         />
       </RoundedContainer>
+
       <RoundedContainer title="Results">
         <p>
           <strong>Energy cost per 100KM:</strong> PHP {powerCost.toFixed(2)}
