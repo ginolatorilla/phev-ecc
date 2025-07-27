@@ -1,4 +1,4 @@
-# Gino's EV Charging Cost Calculator
+# Gino's EV Energy Cost Calculator
 
 ## Built With
 
