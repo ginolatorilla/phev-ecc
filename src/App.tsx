@@ -2,13 +2,15 @@ import RangeNumber from "@components/RangeNumber";
 import RoundedContainer from "@components/RoundedContainer";
 import SelectionWithDescription from "@components/SelectionWithDescription";
 import { useMemo, useState } from "react";
+import Cookies from "universal-cookie";
 
 const App = () => {
-  const [energyEconomy, setEnergyEconomy] = useState(1);
-  const [fuelEconomy, setFuelEconomy] = useState(1);
-  const [powerSource, setPowerSource] = useState("");
-  const [fuelPrice, setFuelPrice] = useState(1);
-  const [powerPrice, setPowerPrice] = useState(1);
+  const cookies = new Cookies(null, { path: "/" });
+  const [energyEconomy, setEnergyEconomy] = useState(cookies.get("phev-ecc-energy-economy") || 1);
+  const [fuelEconomy, setFuelEconomy] = useState(cookies.get("phev-ecc-fuel-economy") || 1);
+  const [powerSource, setPowerSource] = useState(cookies.get("phev-ecc-power-source") || "");
+  const [fuelPrice, setFuelPrice] = useState(cookies.get("phev-ecc-fuel-price") || 1);
+  const [powerPrice, setPowerPrice] = useState(cookies.get("phev-ecc-power-price") || 1);
   const powerCost = useMemo(() => {
     const unitPrice = powerSource === "Other" ? powerPrice : (powerRates.get(powerSource)?.rate ?? 0);
     return (energyEconomy * unitPrice) / chargerEfficiency;
@@ -16,7 +18,7 @@ const App = () => {
   const fuelCost = useMemo(() => {
     return fuelEconomy * fuelPrice;
   }, [fuelEconomy, fuelPrice]);
-  const [budget, setBudget] = useState(20);
+  const [budget, setBudget] = useState(cookies.get("phev-ecc-budget") || 20);
 
   return (
     <>
@@ -29,7 +31,10 @@ const App = () => {
           max={50}
           value={energyEconomy}
           label="Avg. energy economy (KWh/100KM)?"
-          onChange={(e) => setEnergyEconomy(Number(e.target.value))}
+          onChange={(e) => {
+            setEnergyEconomy(Number(e.target.value));
+            cookies.set("phev-ecc-energy-economy", Number(e.target.value));
+          }}
         />
 
         <RangeNumber
@@ -37,7 +42,10 @@ const App = () => {
           max={30}
           value={fuelEconomy}
           label="Avg. fuel economy (L/100KM)?"
-          onChange={(e) => setFuelEconomy(Number(e.target.value))}
+          onChange={(e) => {
+            setFuelEconomy(Number(e.target.value));
+            cookies.set("phev-ecc-fuel-economy", Number(e.target.value));
+          }}
         />
       </RoundedContainer>
 
@@ -46,7 +54,10 @@ const App = () => {
           title="Who provides electricity?"
           options={Array.from(powerRates.entries()).map(([name, { description }]) => ({ name, description }))}
           choice={powerSource}
-          onChange={(e) => setPowerSource(e.target.value)}
+          onChange={(e) => {
+            setPowerSource(e.target.value);
+            cookies.set("phev-ecc-power-source", e.target.value);
+          }}
           placeholder="Select a power provider"
         />
 
@@ -56,7 +67,10 @@ const App = () => {
             max={100}
             value={powerPrice}
             label="Cost of power (PHP/KW)?"
-            onChange={(e) => setPowerPrice(Number(e.target.value))}
+            onChange={(e) => {
+              setPowerPrice(Number(e.target.value));
+              cookies.set("phev-ecc-power-price", Number(e.target.value));
+            }}
           />
         )}
 
@@ -65,7 +79,10 @@ const App = () => {
           max={100}
           value={fuelPrice}
           label="Cost of gas (PHP/L)?"
-          onChange={(e) => setFuelPrice(Number(e.target.value))}
+          onChange={(e) => {
+            setFuelPrice(Number(e.target.value));
+            cookies.set("phev-ecc-fuel-price", Number(e.target.value));
+          }}
         />
       </RoundedContainer>
 
@@ -75,7 +92,10 @@ const App = () => {
           max={10000}
           value={budget}
           label="How much is your budget (PHP)?"
-          onChange={(e) => setBudget(Number(e.target.value))}
+          onChange={(e) => {
+            setBudget(Number(e.target.value));
+            cookies.set("phev-ecc-budget", Number(e.target.value));
+          }}
         />
       </RoundedContainer>
 
