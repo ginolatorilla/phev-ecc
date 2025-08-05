@@ -20,7 +20,8 @@ const App = () => {
 
   return (
     <>
-      <h1>EV Energy Cost Calculator</h1>
+      <h1 className="text-2xl font-bold">Gino&apos;s PHEV Energy Cost Calculator</h1>
+      <p className="text-sm text-gray-500">v0.1.0</p>
 
       <RoundedContainer title="How's your driving?">
         <RangeNumber

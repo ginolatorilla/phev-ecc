@@ -1,4 +1,4 @@
-# Gino's EV Energy Cost Calculator
+# Gino's PHEV Energy Cost Calculator
 
 ## Built With
 
