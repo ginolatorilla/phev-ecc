@@ -95,6 +95,8 @@ const App = () => {
 
 const powerRates = new Map<string, { rate: number; description: string }>([
   ["Meralco", { rate: 12.64, description: "PHP 12.64 per kWh as of July 2025" }],
+  ["La Union Electric Co-op", { rate: 12.519, description: "PHP 12.519 per kWh as of July 2025" }],
+  ["Shell Recharge", { rate: 28, description: "PHP 28 per kWh for AC charging at Luzon" }],
   ["AC Mobility", { rate: 28.5, description: "PHP 28.50 per kWh for AC charging at Luzon" }],
   [
     "AC Mobility Charge500",
