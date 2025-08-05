@@ -10,12 +10,13 @@ const App = () => {
   const [fuelPrice, setFuelPrice] = useState(1);
   const [powerPrice, setPowerPrice] = useState(1);
   const powerCost = useMemo(() => {
-    const unitPrice = powerSource === "Other" ? powerPrice : (powerRates.get(powerSource) ?? 0);
-    return energyEconomy * unitPrice;
+    const unitPrice = powerSource === "Other" ? powerPrice : (powerRates.get(powerSource)?.rate ?? 0);
+    return (energyEconomy * unitPrice) / chargerEfficiency;
   }, [powerSource, energyEconomy, powerPrice]);
   const fuelCost = useMemo(() => {
     return fuelEconomy * fuelPrice;
   }, [fuelEconomy, fuelPrice]);
+  const [budget, setBudget] = useState(20);
 
   return (
     <>
@@ -42,11 +43,7 @@ const App = () => {
       <RoundedContainer title="Energy sources">
         <SelectionWithDescription
           title="Who provides electricity?"
-          options={[
-            { name: "Meralco", description: "PHP 12.64 per kWh as of July 2025" },
-            { name: "EVRO", description: "PHP 28.50 per kWh" },
-            { name: "Other", description: "Please specify in the input below" },
-          ]}
+          options={Array.from(powerRates.entries()).map(([name, { description }]) => ({ name, description }))}
           choice={powerSource}
           onChange={(e) => setPowerSource(e.target.value)}
           placeholder="Select a power provider"
@@ -71,28 +68,44 @@ const App = () => {
         />
       </RoundedContainer>
 
-      <RoundedContainer title="Results">
+      <RoundedContainer title="Budget">
+        <RangeNumber
+          min={0}
+          max={10000}
+          value={budget}
+          label="How much is your budget (PHP)?"
+          onChange={(e) => setBudget(Number(e.target.value))}
+        />
+      </RoundedContainer>
+
+      <RoundedContainer title="Results" className={powerCost === 0 ? "hidden" : ""}>
         <p>
-          <strong>Energy cost per 100KM:</strong> PHP {powerCost.toFixed(2)}
+          It costs <strong>PHP {powerCost.toFixed(2)}</strong> per 100KM if you drive in <strong>EV mode</strong>, and{" "}
+          <strong>PHP {fuelCost.toFixed(2)}</strong> per 100KM if you drive in <strong>HEV mode</strong>.
         </p>
         <p>
-          <strong>Fuel cost per 100KM:</strong> PHP {fuelCost.toFixed(2)}
-        </p>
-        <p>
-          <strong>Cost difference per 100KM:</strong> PHP {(powerCost - fuelCost).toFixed(2)}
-        </p>
-        <p>
-          <strong>Cost difference per 100KM:</strong>{" "}
-          {powerCost - fuelCost < 0 ? "Electricity is cheaper" : "Fuel is cheaper"}
+          If you have a budget of <strong>PHP {budget}</strong>, you can drive up to{" "}
+          <strong>{((budget / powerCost) * 100).toFixed(2)}</strong> KM in <strong>EV mode</strong>, or{" "}
+          <strong>{((budget / fuelCost) * 100).toFixed(2)}</strong> KM in <strong>HEV mode</strong>.
         </p>
       </RoundedContainer>
     </>
   );
 };
 
-const powerRates = new Map<string, number>([
-  ["Meralco", 12.64],
-  ["EVRO", 28.5],
+const powerRates = new Map<string, { rate: number; description: string }>([
+  ["Meralco", { rate: 12.64, description: "PHP 12.64 per kWh as of July 2025" }],
+  ["AC Mobility", { rate: 28.5, description: "PHP 28.50 per kWh for AC charging at Luzon" }],
+  [
+    "AC Mobility Charge500",
+    { rate: (28.5 * 500) / 600, description: "PHP 23.75 per kWh (16.67% discount) for AC charging at Luzon" },
+  ],
+  [
+    "AC Mobility Plan1200/2000/4000",
+    { rate: (28.5 * 1200) / 1500, description: "PHP 22.80 per kWh (20.7% discount) for AC charging at Luzon" },
+  ],
 ]);
+
+const chargerEfficiency = 0.9; // 6.3KW to the car, 7KW from the wall, and 1.9KW to the car, 2.1KW from the wall
 
 export default App;
