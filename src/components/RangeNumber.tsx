@@ -13,6 +13,7 @@ import { ChangeEventHandler } from "react";
 const RangeNumber = ({
   min,
   max,
+  step,
   rangeMax,
   value,
   onChange,
@@ -22,6 +23,7 @@ const RangeNumber = ({
 }: {
   min: number;
   max: number;
+  step?: number;
   rangeMax?: number;
   value: number;
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -40,7 +42,7 @@ const RangeNumber = ({
           value={value}
           max={rangeMax ?? max}
           onChange={onChange}
-          step={0.1}
+          step={step ?? 0.1}
         />
         <input
           className="border-outline ml-2 px-1 py-1 text-right text-sm rounded-[0.15rem] hover:cursor-pointer"
@@ -49,7 +51,7 @@ const RangeNumber = ({
           value={value}
           max={max}
           onChange={onChange}
-          step={0.1}
+          step={step ?? 0.1}
           inputMode="decimal"
           aria-label="Enter a number"
         />

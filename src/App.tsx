@@ -90,6 +90,7 @@ const App = () => {
         <RangeNumber
           min={0}
           max={10000}
+          step={1}
           value={budget}
           label="How much is your budget (PHP)?"
           onChange={(e) => {
