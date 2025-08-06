@@ -18,6 +18,10 @@ const App = () => {
   const fuelCost = useMemo(() => {
     return fuelEconomy * fuelPrice;
   }, [fuelEconomy, fuelPrice]);
+  const costDifference = useMemo(() => {
+    return Math.abs(powerCost - fuelCost);
+  }, [powerCost, fuelCost]);
+  // Budget state
   const [budget, setBudget] = useState(cookies.get("phev-ecc-budget") || 20);
 
   return (
@@ -103,7 +107,8 @@ const App = () => {
       <RoundedContainer title="Results" className={powerCost === 0 ? "hidden" : ""}>
         <p>
           It costs <strong>PHP {powerCost.toFixed(2)}</strong> per 100KM if you drive in <strong>EV mode</strong>, and{" "}
-          <strong>PHP {fuelCost.toFixed(2)}</strong> per 100KM if you drive in <strong>HEV mode</strong>.
+          <strong>PHP {fuelCost.toFixed(2)}</strong> per 100KM if you drive in <strong>HEV mode</strong>. Driving in{" "}
+          {fuelCost > powerCost ? "EV" : "HEV"} mode is cheaper by <strong>PHP {costDifference.toFixed(2)}</strong>.
         </p>
         <p>
           If you have a budget of <strong>PHP {budget}</strong>, you can drive up to{" "}
@@ -128,6 +133,7 @@ const powerRates = new Map<string, { rate: number; description: string }>([
     "AC Mobility Plan1200/2000/4000",
     { rate: (28.5 * 1200) / 1500, description: "PHP 22.80 per kWh (20.7% discount) for AC charging at Luzon" },
   ],
+  ["Other", { rate: 0, description: "" }],
 ]);
 
 const chargerEfficiency = 0.9; // 6.3KW to the car, 7KW from the wall, and 1.9KW to the car, 2.1KW from the wall
