@@ -26,96 +26,103 @@ const App = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-bold">Gino&apos;s PHEV Energy Cost Calculator</h1>
-      <p className="text-sm text-gray-500">v0.1.0</p>
+      <div className="flex flex-col gap-4 px-1 md:p-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Gino&apos;s PHEV Energy Cost Calculator</h1>
+          <p className="text-sm text-gray-500">v0.1.0</p>
+        </div>
 
-      <RoundedContainer title="How's your driving?">
-        <RangeNumber
-          min={1}
-          max={50}
-          value={energyEconomy}
-          label="Avg. energy economy (KWh/100KM)?"
-          onChange={(e) => {
-            setEnergyEconomy(Number(e.target.value));
-            cookies.set("phev-ecc-energy-economy", Number(e.target.value));
-          }}
-        />
+        <div className="flex flex-col gap-1">
+          <RoundedContainer title="How's your driving?">
+            <RangeNumber
+              min={1}
+              max={50}
+              value={energyEconomy}
+              label="Avg. energy economy (KWh/100KM)?"
+              onChange={(e) => {
+                setEnergyEconomy(Number(e.target.value));
+                cookies.set("phev-ecc-energy-economy", Number(e.target.value));
+              }}
+            />
 
-        <RangeNumber
-          min={1}
-          max={30}
-          value={fuelEconomy}
-          label="Avg. fuel economy (L/100KM)?"
-          onChange={(e) => {
-            setFuelEconomy(Number(e.target.value));
-            cookies.set("phev-ecc-fuel-economy", Number(e.target.value));
-          }}
-        />
-      </RoundedContainer>
+            <RangeNumber
+              min={1}
+              max={30}
+              value={fuelEconomy}
+              label="Avg. fuel economy (L/100KM)?"
+              onChange={(e) => {
+                setFuelEconomy(Number(e.target.value));
+                cookies.set("phev-ecc-fuel-economy", Number(e.target.value));
+              }}
+            />
+          </RoundedContainer>
 
-      <RoundedContainer title="Energy sources">
-        <SelectionWithDescription
-          title="Who provides electricity?"
-          options={Array.from(powerRates.entries()).map(([name, { description }]) => ({ name, description }))}
-          choice={powerSource}
-          onChange={(e) => {
-            setPowerSource(e.target.value);
-            cookies.set("phev-ecc-power-source", e.target.value);
-          }}
-          placeholder="Select a power provider"
-        />
+          <RoundedContainer title="Energy sources">
+            <SelectionWithDescription
+              title="Who provides electricity?"
+              options={Array.from(powerRates.entries()).map(([name, { description }]) => ({ name, description }))}
+              choice={powerSource}
+              onChange={(e) => {
+                setPowerSource(e.target.value);
+                cookies.set("phev-ecc-power-source", e.target.value);
+              }}
+              placeholder="Select a power provider"
+            />
 
-        {powerSource === "Other" && (
-          <RangeNumber
-            min={1}
-            max={100}
-            value={powerPrice}
-            label="Cost of power (PHP/KW)?"
-            onChange={(e) => {
-              setPowerPrice(Number(e.target.value));
-              cookies.set("phev-ecc-power-price", Number(e.target.value));
-            }}
-          />
-        )}
+            {powerSource === "Other" && (
+              <RangeNumber
+                min={1}
+                max={100}
+                value={powerPrice}
+                label="Cost of power (PHP/KW)?"
+                onChange={(e) => {
+                  setPowerPrice(Number(e.target.value));
+                  cookies.set("phev-ecc-power-price", Number(e.target.value));
+                }}
+              />
+            )}
 
-        <RangeNumber
-          min={1}
-          max={100}
-          value={fuelPrice}
-          label="Cost of gas (PHP/L)?"
-          onChange={(e) => {
-            setFuelPrice(Number(e.target.value));
-            cookies.set("phev-ecc-fuel-price", Number(e.target.value));
-          }}
-        />
-      </RoundedContainer>
+            <RangeNumber
+              min={1}
+              max={100}
+              value={fuelPrice}
+              label="Cost of gas (PHP/L)?"
+              onChange={(e) => {
+                setFuelPrice(Number(e.target.value));
+                cookies.set("phev-ecc-fuel-price", Number(e.target.value));
+              }}
+            />
+          </RoundedContainer>
 
-      <RoundedContainer title="Budget">
-        <RangeNumber
-          min={0}
-          max={10000}
-          step={1}
-          value={budget}
-          label="How much is your budget (PHP)?"
-          onChange={(e) => {
-            setBudget(Number(e.target.value));
-            cookies.set("phev-ecc-budget", Number(e.target.value));
-          }}
-        />
-      </RoundedContainer>
+          <RoundedContainer title="Budget">
+            <RangeNumber
+              min={0}
+              max={10000}
+              step={1}
+              value={budget}
+              label="How much is your budget (PHP)?"
+              onChange={(e) => {
+                setBudget(Number(e.target.value));
+                cookies.set("phev-ecc-budget", Number(e.target.value));
+              }}
+            />
+          </RoundedContainer>
 
-      <RoundedContainer title="Results" className={powerCost === 0 ? "hidden" : ""}>
-        <p>
-          It costs <strong>PHP {powerCost.toFixed(2)}</strong> per 100KM if you drive in <strong>EV mode</strong>, and{" "}
-          <strong>PHP {fuelCost.toFixed(2)}</strong> per 100KM if you drive in <strong>HEV mode</strong>. Driving in{" "}
-          {fuelCost > powerCost ? "EV" : "HEV"} mode is cheaper by <strong>PHP {costDifference.toFixed(2)}</strong>.
-        </p>
-        <p>
-          If you have a budget of <strong>PHP {budget}</strong>, you can drive up to{" "}
-          <strong>{((budget / powerCost) * 100).toFixed(2)}</strong> KM in <strong>EV mode</strong>, or{" "}
-          <strong>{((budget / fuelCost) * 100).toFixed(2)}</strong> KM in <strong>HEV mode</strong>.
-        </p>
-      </RoundedContainer>
+          <RoundedContainer title="Results" className={powerCost === 0 ? "hidden" : ""}>
+            <p>
+              It costs <strong>PHP {powerCost.toFixed(2)}</strong> per 100KM if you drive in <strong>EV mode</strong>,
+              and <strong>PHP {fuelCost.toFixed(2)}</strong> per 100KM if you drive in <strong>HEV mode</strong>.
+              Driving in {fuelCost > powerCost ? "EV" : "HEV"} mode is cheaper by{" "}
+              <strong>PHP {costDifference.toFixed(2)}</strong>.
+            </p>
+            <p>
+              If you have a budget of <strong>PHP {budget}</strong>, you can drive up to{" "}
+              <strong>{((budget / powerCost) * 100).toFixed(2)}</strong> KM in <strong>EV mode</strong>, or{" "}
+              <strong>{((budget / fuelCost) * 100).toFixed(2)}</strong> KM in <strong>HEV mode</strong>.
+            </p>
+          </RoundedContainer>
+        </div>
+      </div>
     </>
   );
 };
