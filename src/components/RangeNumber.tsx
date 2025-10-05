@@ -54,6 +54,7 @@ const RangeNumber = ({
           step={step ?? 0.1}
           inputMode="decimal"
           aria-label="Enter a number"
+          onClick={(e) => e.currentTarget.select()}
         />
       </div>
       <label className="text-muted text-sm">{caption}</label>
