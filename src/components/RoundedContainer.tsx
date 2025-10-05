@@ -24,7 +24,7 @@ const RoundedContainer = ({
     <div className={`border-outline flex flex-col gap-4 rounded-lg border p-4 ${className}`}>
       <h1 className="text-xl font-bold">{title}</h1>
       {caption}
-      <div className={`${innerClassName} flex grow flex-col gap-4`}>{children}</div>
+      <div className={`flex grow gap-4 ${innerClassName ?? "flex-col"}`}>{children}</div>
     </div>
   );
 };
