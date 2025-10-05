@@ -27,9 +27,9 @@ const App = () => {
   return (
     <>
       <div className="flex flex-col gap-4 px-1 md:p-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold">Gino&apos;s PHEV Energy Cost Calculator</h1>
-          <p className="text-sm text-gray-500">v0.1.0</p>
+        <div className="flex pt-4 md:pt-1 items-center justify-around md:justify-between gap-1 text-center md:text-left">
+          <h1 className="text-xl md:text-2xl font-bold">Gino&apos;s EV Energy Cost Calculator</h1>
+          <p className="text-sm text-gray-500">v0.1.1</p>
         </div>
 
         <div className="flex flex-col gap-1">
